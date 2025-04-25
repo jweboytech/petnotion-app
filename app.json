@@ -1,17 +1,24 @@
 {
   "expo": {
-    "name": "pet-notion-app",
-    "slug": "pet-notion-app",
+    "name": "petnotion",
+    "slug": "petnotion",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "petnotion",
+    "extra": {
+      "supabase": {
+        "redirectUrl": "petnotion://auth-callback"
+      }
+    },
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.petnotion.app"
     },
     "android": {
+      "package": "com.petnotion.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
