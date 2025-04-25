@@ -10,11 +10,12 @@ import { supabase } from "@/lib/supabase";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import { router } from "expo-router";
+import { toast } from "@/utils";
 
 const GuideScreen = () => {
   const handleGoogleLogin = async () => {
     try {
-      // 生成自定义的 redirectUrl（重要！）
+      // 生成自定义的 redirectUrl
       const redirectUrl = Linking.createURL("oauth-callback");
 
       const { error, data } = await supabase.auth.signInWithOAuth({
@@ -25,12 +26,9 @@ const GuideScreen = () => {
         },
       });
 
-      console.log(error, data);
       if (error) throw error;
 
       if (data?.url) {
-        console.log(55, data.url);
-
         // 打开浏览器登录页面
         const result = await WebBrowser.openAuthSessionAsync(
           data.url,
@@ -44,19 +42,23 @@ const GuideScreen = () => {
         console.log("OAuth Result:", result);
 
         if (result.type === "success") {
-          // 解析Toke
+          // 解析Token
           const hashParams = new URLSearchParams(result.url.split("#")[1]);
           const access_token = hashParams.get("access_token");
           const refresh_token = hashParams.get("refresh_token");
 
           if (access_token && refresh_token) {
             await supabase.auth.setSession({ access_token, refresh_token });
-            router.replace("/home");
+            toast("Login Successfu ~");
+            setTimeout(() => {
+              router.replace("/home");
+            }, 300);
           }
         }
       }
     } catch (error) {
-      console.log("error", error);
+      // console.log("error", error);
+      Alert.alert("Login failed, please try again later");
     }
   };
 
