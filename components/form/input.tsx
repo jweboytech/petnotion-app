@@ -6,7 +6,8 @@ import {
   UseControllerProps,
 } from "react-hook-form";
 import Input, { InputProps } from "../textInput";
-import { Pressable, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import Column from "../column";
 
 export interface InputFieldProps<T extends FieldValues>
   extends Pick<UseControllerProps<T>, "rules" | "control">,
@@ -30,19 +31,32 @@ function InputField<T extends FieldValues>({
       control={control}
       name={name}
       rules={{ required: true }}
-      render={({ field: { onChange, value } }) => (
-        <Input
-          editable={editable}
-          height={height}
-          label={label}
-          placeholder={placeholder}
-          onChange={onChange}
-          value={value}
-          endContent={endContent}
-        />
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
+        <Column>
+          <Input
+            editable={editable}
+            height={height}
+            label={label}
+            placeholder={placeholder}
+            onChange={onChange}
+            value={value}
+            endContent={endContent}
+          />
+          <React.Fragment>
+            {error && <Text style={styles.errorText}>{error.message}</Text>}
+          </React.Fragment>
+        </Column>
       )}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 4,
+  },
+});
 
 export default InputField;
