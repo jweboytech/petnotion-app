@@ -11,10 +11,12 @@ import Avatar from "./avatar";
 import { supabase } from "@/lib/supabase";
 import { checkIsAuthedUser } from "@/utils/supabase";
 import { toast } from "@/utils";
+import { usePetStore } from "@/store/pet";
 
 const PetPopup = ({ pets }: { pets: Pet[] }) => {
   const popupRef = React.useRef<PopupRef>(null);
-  const [petId, setPetId] = React.useState<number>();
+  const [petId, setPetId] = React.useState<string>();
+  const setCurrPet = usePetStore((state) => state.setCurrPet);
 
   const handleAddPet = () => {
     popupRef.current?.onToggle();
@@ -23,6 +25,7 @@ const PetPopup = ({ pets }: { pets: Pet[] }) => {
 
   const handlePress = (record: Pet) => async () => {
     checkIsAuthedUser(async (userId) => {
+      console.log(record, userId);
       const { error } = await supabase.from("user_pet_settings").upsert(
         {
           user_id: userId,
@@ -36,6 +39,7 @@ const PetPopup = ({ pets }: { pets: Pet[] }) => {
         return;
       }
 
+      setCurrPet(record);
       setPetId(record.id);
       setTimeout(() => {
         popupRef.current?.onToggle();

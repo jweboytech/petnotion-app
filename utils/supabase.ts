@@ -2,6 +2,14 @@ import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
 import { toast } from ".";
 
+export const getUserData = async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return user;
+};
+
 export const checkIsAuthedUser = async (callback: (param: string) => void) => {
   const {
     data: { user },

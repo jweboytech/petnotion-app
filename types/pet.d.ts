@@ -1,5 +1,5 @@
 interface Pet {
   name: string;
   photo: string;
-  id: number;
+  id: string;
 }
