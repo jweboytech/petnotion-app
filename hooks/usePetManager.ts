@@ -3,7 +3,7 @@ import { checkIsAuthedUser, getUserData } from "@/utils/supabase";
 import React from "react";
 
 export const usePetManager = () => {
-  const [currPet, setCurrPet] = React.useState();
+  const [currPet, setCurrPet] = React.useState<Pet>();
   //
   const getCurrPet = async () => {
     const user = await getUserData();
@@ -19,10 +19,12 @@ export const usePetManager = () => {
       .eq("id", data.pet_id)
       .single();
 
+    setCurrPet(pet);
     return pet;
   };
 
   return {
     getCurrPet,
+    currPet,
   };
 };

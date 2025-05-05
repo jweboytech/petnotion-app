@@ -10,34 +10,58 @@ import { checkIsAuthedUser, fetchData, fetchDataById } from "@/utils/supabase";
 import { usePetManager } from "@/hooks/usePetManager";
 import { usePetStore } from "@/store/pet";
 import Button from "@/components/button";
+import useEventManager from "@/hooks/useEventManager";
+import { Card } from "react-native-paper";
+import Column from "@/components/column";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { Image } from "react-native-expo-image-cache";
 
 const HomeScreen = () => {
-  const { getCurrPet } = usePetManager();
+  const { getCurrPet, currPet } = usePetManager();
   const setCurrPet = usePetStore((state) => state.setCurrPet);
   const [pets, setPets] = React.useState<Pet[]>([]);
+  const { getUserEvents, userEvents } = useEventManager();
 
   useFocusEffect(
     React.useCallback(() => {
-      getCurrPet().then((pet) => {
-        setCurrPet(pet);
-      });
-
-      fetchData<Pet>("pets").then((data) => {
-        setPets(data);
-      });
+      Promise.all([getCurrPet(), fetchData<Pet>("pets"), getUserEvents()]).then(
+        ([petData, petList]) => {
+          setCurrPet(petData);
+          setPets(petList);
+        }
+      );
     }, [])
   );
 
   return (
-    <MainLayout>
-      <Row justifyContent="space-between">
-        <Text>Pet Notion</Text>
-        <PetPopup pets={pets} />
-      </Row>
-      <Button mode="contained" href="/event-form">
-        Event Form
-      </Button>
-    </MainLayout>
+    <ParallaxScrollView
+      headerImage={
+        currPet?.photo ? (
+          <Image style={{ height: 240 }} uri={currPet.photo} />
+        ) : (
+          <View />
+        )
+      }
+    >
+      <MainLayout>
+        <Column gap={16}>
+          <Row justifyContent="space-between">
+            <Text>Pet Notion</Text>
+            <PetPopup pets={pets} />
+          </Row>
+          <React.Fragment>
+            {userEvents.map((item) => (
+              <Card key={item.id}>
+                <Card.Title title={item.title} subtitle={item.created_at} />
+              </Card>
+            ))}
+          </React.Fragment>
+          <Button mode="contained" href="/event-form">
+            Add Moments
+          </Button>
+        </Column>
+      </MainLayout>
+    </ParallaxScrollView>
   );
 };
 
