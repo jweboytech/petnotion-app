@@ -15,12 +15,12 @@ export const checkIsAuthedUser = async (callback: (param: string) => void) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // if (!user) {
-  //   router.replace("/(auth)/signin");
-  //   return;
-  // }
+  if (!user) {
+    router.replace("/my");
+    return;
+  }
 
-  callback(user?.id);
+  callback(user.id);
 };
 
 export const insertData = async <T>(table: string, values: T) => {

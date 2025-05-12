@@ -19,16 +19,20 @@ import {
   Path,
   UseControllerProps,
 } from "react-hook-form";
-import Upload from "../upload";
+import Upload, { UploadProps } from "../upload";
 
 export interface UploadFieldProps<T extends FieldValues>
-  extends Pick<UseControllerProps<T>, "rules" | "control"> {
+  extends Pick<UseControllerProps<T>, "rules" | "control">,
+    Pick<UploadProps, "bucket"> {
   name: Path<T>;
+  label: string;
 }
 
 function UploadField<T extends FieldValues>({
   control,
   name,
+  label,
+  bucket,
 }: UploadFieldProps<T>) {
   return (
     <Controller
@@ -36,7 +40,10 @@ function UploadField<T extends FieldValues>({
       name={name}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <Column>
-          <Upload onChange={onChange} value={value} />
+          <React.Fragment>
+            {label && <Text style={styles.label}>{label}</Text>}
+          </React.Fragment>
+          <Upload onChange={onChange} value={value} bucket={bucket} />
           <React.Fragment>
             {error && <Text style={styles.errorText}>{error.message}</Text>}
           </React.Fragment>
@@ -47,6 +54,9 @@ function UploadField<T extends FieldValues>({
 }
 
 const styles = StyleSheet.create({
+  label: {
+    marginBottom: 8,
+  },
   errorText: {
     color: "red",
     fontSize: 12,

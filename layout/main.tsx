@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RootSiblingParent } from "react-native-root-siblings";
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children }: ComponentBaseProps) => {
   const insets = useSafeAreaInsets();
 
   return (

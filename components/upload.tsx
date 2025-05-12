@@ -17,12 +17,13 @@ import Row from "./row";
 export interface UploadProps {
   onChange: (param: string) => void;
   value: string;
+  bucket?: string;
 }
 
 // 限制为 5MB（单位字节）
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-function Upload({ onChange, value }: UploadProps) {
+function Upload({ onChange, value, bucket = "avatars" }: UploadProps) {
   const [image, setImage] = React.useState<string>("");
   const [isUploading, setIsUploading] = React.useState(false);
 
@@ -69,7 +70,7 @@ function Upload({ onChange, value }: UploadProps) {
 
         // 上传到 storage
         const { data: file, error } = await supabase.storage
-          .from("avatars")
+          .from(bucket)
           .upload(fileName, byteArray, {
             // 文件类型
             contentType: asset.mimeType || "image/jpeg",
@@ -83,14 +84,14 @@ function Upload({ onChange, value }: UploadProps) {
 
         // 获取公共可访问链接
         const { data } = await supabase.storage
-          .from("avatars")
+          .from(bucket)
           .getPublicUrl(file?.path!);
 
         setImage(fileUri);
         onChange?.(data.publicUrl);
       }
     } catch (error) {
-      // console.log("error", error);
+      console.log("error", error);
       toast("Image upload failed, please try again later");
     } finally {
       setIsUploading(false);

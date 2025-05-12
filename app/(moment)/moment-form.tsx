@@ -2,7 +2,7 @@ import Button from "@/components/button";
 import Column from "@/components/column";
 import InputField from "@/components/form/input";
 import UploadField from "@/components/form/upload";
-import useEvent from "@/hooks/useEventManager";
+import useEvent, { Moment } from "@/hooks/useEventManager";
 import MainLayout from "@/layout/main";
 import { supabase } from "@/lib/supabase";
 import { usePetStore } from "@/store/pet";
@@ -16,25 +16,20 @@ import { z } from "zod";
 
 const schema = z.object({
   title: z.string({ message: "Please enter title" }),
-  description: z.string().optional(),
-  photo: z.string({ message: "Please upload at least one photo" }).optional(),
+  photo: z.string({ message: "Please upload at least one photo" }),
 });
 
-const EventFormScreen = () => {
+const MomentFormScreen = () => {
   const currPet = usePetStore((state) => state.currPet);
-  const { addEvent } = useEvent();
-  const form = useForm<z.infer<typeof schema>>({
+  const { addMoment } = useEvent();
+  const form = useForm<Moment>({
     resolver: zodResolver(schema),
   });
 
-  console.log(5, currPet);
-
-  const handleSubmit = async (values: z.infer<typeof schema>) => {
-    checkIsAuthedUser((userId) => {
-      addEvent({ ...values, user_id: userId, pet_id: currPet.id });
-      //    toast(data.error.message);
-      //   toast("Save Successful");
-      //   router.back();
+  const handleSubmit = (values: Moment) => {
+    addMoment(currPet.id, values).then(() => {
+      toast("Save Successful");
+      router.back();
     });
   };
 
@@ -47,13 +42,18 @@ const EventFormScreen = () => {
           control={form.control}
           placeholder="Please enter title"
         />
-        <InputField
+        {/* <InputField
           name="notes"
           label="description"
           control={form.control}
           placeholder="Please enter notes (optional)"
+        /> */}
+        <UploadField
+          label="Capture Moment"
+          name="photo"
+          control={form.control}
+          bucket="moments"
         />
-        <UploadField name="photo" control={form.control} />
         <Button mode="contained" onPress={form.handleSubmit(handleSubmit)}>
           Submit
         </Button>
@@ -62,4 +62,4 @@ const EventFormScreen = () => {
   );
 };
 
-export default EventFormScreen;
+export default MomentFormScreen;

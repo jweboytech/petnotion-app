@@ -2,7 +2,7 @@ import Row from "@/components/row";
 import MainLayout from "@/layout/main";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import PetPopup from "../../../components/petPopup";
 import { supabase } from "@/lib/supabase";
 import { useFocusEffect } from "expo-router";
@@ -11,58 +11,71 @@ import { usePetManager } from "@/hooks/usePetManager";
 import { usePetStore } from "@/store/pet";
 import Button from "@/components/button";
 import useEventManager from "@/hooks/useEventManager";
-import { Card } from "react-native-paper";
+import { ActivityIndicator, Card, FAB } from "react-native-paper";
 import Column from "@/components/column";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { Image } from "react-native-expo-image-cache";
+import MomentCard from "@/components/momentCard";
+import FloatActions from "@/components/floatActions";
 
 const HomeScreen = () => {
   const { getCurrPet, currPet } = usePetManager();
   const setCurrPet = usePetStore((state) => state.setCurrPet);
   const [pets, setPets] = React.useState<Pet[]>([]);
-  const { getUserEvents, userEvents } = useEventManager();
+  const { getPetMomentsByUser, petMoments } = useEventManager();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
-      Promise.all([getCurrPet(), fetchData<Pet>("pets"), getUserEvents()]).then(
-        ([petData, petList]) => {
+      setIsLoading(true);
+      Promise.all([getCurrPet(), getPetMomentsByUser()])
+        .then(([petData]) => {
           setCurrPet(petData);
-          setPets(petList);
-        }
-      );
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }, [])
   );
 
   return (
-    <ParallaxScrollView
-      headerImage={
-        currPet?.photo ? (
-          <Image style={{ height: 240 }} uri={currPet.photo} />
-        ) : (
-          <View />
-        )
-      }
-    >
-      <MainLayout>
-        <Column gap={16}>
-          <Row justifyContent="space-between">
-            <Text>Pet Notion</Text>
-            <PetPopup pets={pets} />
-          </Row>
-          <React.Fragment>
-            {userEvents.map((item) => (
-              <Card key={item.id}>
-                <Card.Title title={item.title} subtitle={item.created_at} />
-              </Card>
-            ))}
-          </React.Fragment>
-          <Button mode="contained" href="/event-form">
-            Add Moments
-          </Button>
-        </Column>
-      </MainLayout>
-    </ParallaxScrollView>
+    <React.Fragment>
+      <ParallaxScrollView
+        headerImage={
+          currPet?.photo ? (
+            <Image style={{ height: 240 }} uri={currPet.photo} />
+          ) : (
+            <View />
+          )
+        }
+      >
+        <MainLayout>
+          {!isLoading ? (
+            <Column gap={16}>
+              <Text style={styles.title}>Moments</Text>
+              <React.Fragment>
+                {petMoments.map((item) => (
+                  <MomentCard data={item} key={item.id} />
+                ))}
+              </React.Fragment>
+            </Column>
+          ) : (
+            <Row alignItems="center" justifyContent="center" flex={1}>
+              <ActivityIndicator size="large" />
+            </Row>
+          )}
+        </MainLayout>
+      </ParallaxScrollView>
+      <FloatActions />
+    </React.Fragment>
   );
 };
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 24,
+    fontWeight: 600,
+  },
+});
 
 export default HomeScreen;

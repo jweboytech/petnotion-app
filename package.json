@@ -25,6 +25,7 @@
     "@rneui/themed": "^4.0.0-rc.8",
     "@supabase/supabase-js": "^2.49.4",
     "Ionicons": "link:@expo/vector-icons/Ionicons",
+    "dayjs": "^1.11.13",
     "expo": "~52.0.43",
     "expo-auth-session": "~6.0.3",
     "expo-blur": "~14.0.3",
