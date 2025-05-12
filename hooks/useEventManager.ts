@@ -51,7 +51,7 @@ const useEventManager = () => {
     }
   };
 
-  const getPetMomentsByUser = async () => {
+  const getPetMomentsByUser = async (petId: string) => {
     try {
       setIsLoading(true);
       const user = await getUserData();
@@ -69,6 +69,7 @@ const useEventManager = () => {
           `
         )
         .eq("user_id", user!.id)
+        .eq("pet_id", petId)
         .order("created_at", { ascending: false });
 
       if (error) throw error;

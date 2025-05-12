@@ -26,8 +26,12 @@ const ChoosePetScreen = () => {
 
   const handleItemPress = (record: Pet) => async () => {
     await setCurrPetData(record.id);
+    await getCurrPet();
     setCurrPet(record);
-    getCurrPet();
+
+    setTimeout(() => {
+      router.back();
+    }, 300);
   };
 
   useFocusEffect(

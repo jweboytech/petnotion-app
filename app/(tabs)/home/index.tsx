@@ -21,7 +21,6 @@ import FloatActions from "@/components/floatActions";
 const HomeScreen = () => {
   const { getCurrPet, currPet } = usePetManager();
   const setCurrPet = usePetStore((state) => state.setCurrPet);
-  const [pets, setPets] = React.useState<Pet[]>([]);
   const { getPetMomentsByUser, petMoments } = useEventManager();
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -32,9 +31,10 @@ const HomeScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       setIsLoading(true);
-      Promise.all([getCurrPet(), getPetMomentsByUser()])
-        .then(([petData]) => {
-          setCurrPet(petData);
+      getCurrPet()
+        .then((data) => {
+          setCurrPet(data);
+          getPetMomentsByUser(data.id);
         })
         .finally(() => {
           setIsLoading(false);
