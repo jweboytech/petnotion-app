@@ -2,7 +2,7 @@ import React from "react";
 import { FAB, PaperProvider, Portal } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native";
-import { router } from "expo-router";
+import { RelativePathString, router } from "expo-router";
 import PetPopup from "./petPopup";
 import { usePetManager } from "@/hooks/usePetManager";
 
@@ -17,20 +17,20 @@ const FloatActions = ({}: FloatActionsProps) => {
     setIsOpen(open);
   };
 
-  const handleOpenMomentForm = () => {
-    router.push("/moment-form");
+  const handleNavigate = (url: any) => () => {
+    router.push(url);
   };
 
   const actions = [
     {
       icon: "star",
       label: "Moment",
-      onPress: handleOpenMomentForm,
+      onPress: handleNavigate("/moment-form"),
     },
     {
       icon: "dog",
       label: "Paw",
-      onPress: () => console.log("Pressed email"),
+      onPress: handleNavigate("/(pet)/choose"),
     },
   ];
 

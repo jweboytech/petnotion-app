@@ -6,28 +6,60 @@ import React from "react";
 export const usePetManager = () => {
   const [currPet, setCurrPet] = React.useState<Pet>();
   const [allPets, setAllPets] = React.useState<Pet[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  //
+  const setCurrPetData = async (petId: string) => {
+    try {
+      setIsLoading(true);
+      const user = await getUserData();
+      const { error } = await supabase
+        .from("user_pet_settings")
+        .upsert(
+          { user_id: user!.id, pet_id: petId },
+          { onConflict: "user_id" }
+        );
+
+      if (error) throw error;
+
+      setIsLoading(false);
+    } catch (error: any) {
+      toast(error.message);
+      setIsLoading(false);
+    }
+  };
+
   const getCurrPet = async () => {
-    const user = await getUserData();
-    const { data } = await supabase
-      .from("user_pet_settings")
-      .select()
-      .eq("user_id", user!.id)
-      .single();
+    try {
+      setIsLoading(true);
+      const user = await getUserData();
+      const { data, error } = await supabase
+        .from("user_pet_settings")
+        .select()
+        .eq("user_id", user!.id)
+        .single();
 
-    const { data: pet } = await supabase
-      .from("pets")
-      .select()
-      .eq("id", data.pet_id)
-      .single();
+      if (error) throw error;
 
-    setCurrPet(pet);
-    return pet;
+      const { data: pet, error: error1 } = await supabase
+        .from("pets")
+        .select()
+        .eq("id", data.pet_id)
+        .single();
+
+      if (error1) throw error1;
+
+      setIsLoading(false);
+      setCurrPet(pet);
+      return pet;
+    } catch (error: any) {
+      toast(error.message);
+      setIsLoading(false);
+    }
   };
 
   const getAllPets = async () => {
     try {
+      setIsLoading(true);
       const { data, error } = await supabase
         .from("pets")
         .select()
@@ -36,10 +68,11 @@ export const usePetManager = () => {
 
       if (error) throw error;
 
-      return data as Pet[];
+      setIsLoading(false);
+      setAllPets(data);
     } catch (error: any) {
+      setIsLoading(false);
       toast(error.message);
-      return [];
     }
   };
 
@@ -48,5 +81,7 @@ export const usePetManager = () => {
     currPet,
     getAllPets,
     allPets,
+    isLoading,
+    setCurrPetData,
   };
 };
