@@ -5,7 +5,7 @@ import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import PetPopup from "../../../components/petPopup";
 import { supabase } from "@/lib/supabase";
-import { useFocusEffect } from "expo-router";
+import { Link, RelativePathString, router, useFocusEffect } from "expo-router";
 import { checkIsAuthedUser, fetchData, fetchDataById } from "@/utils/supabase";
 import { usePetManager } from "@/hooks/usePetManager";
 import { usePetStore } from "@/store/pet";
@@ -24,6 +24,10 @@ const HomeScreen = () => {
   const [pets, setPets] = React.useState<Pet[]>([]);
   const { getPetMomentsByUser, petMoments } = useEventManager();
   const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleCardPress = (id: string) => {
+    router.push({ pathname: `/(moment)/details`, params: { id } });
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -55,7 +59,11 @@ const HomeScreen = () => {
               <Text style={styles.title}>Moments</Text>
               <React.Fragment>
                 {petMoments.map((item) => (
-                  <MomentCard data={item} key={item.id} />
+                  <MomentCard
+                    data={item}
+                    onPress={handleCardPress}
+                    key={item.id}
+                  />
                 ))}
               </React.Fragment>
             </Column>

@@ -40,6 +40,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)/guide" options={{ headerShown: false }} />
         <Stack.Screen name="(pet)/pet-form" />
         <Stack.Screen name="(moment)/moment-form" />
+        <Stack.Screen name="(moment)/details" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

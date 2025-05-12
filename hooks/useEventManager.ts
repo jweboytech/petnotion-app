@@ -12,6 +12,7 @@ const useEventManager = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [events, setEvents] = React.useState<PetMoment[]>([]);
   const [petMoments, setPetMoments] = React.useState<PetMoment[]>([]);
+  const [petMoment, setPetMoment] = React.useState<PetMoment>();
 
   const addMoment = async (petId: string, payload: Moment) => {
     try {
@@ -91,12 +92,44 @@ const useEventManager = () => {
     }
   };
 
+  const getMomentDetailsById = async (id: string) => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("pet_events")
+        .select(
+          `
+        id,
+        title,
+        created_at,
+        pet_event_photos (
+          id,
+          photo_url
+        )
+      `
+        )
+        .eq("id", id)
+        .single();
+
+      if (error) throw error;
+
+      setPetMoment(data as PetMoment);
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+      toast(error.message);
+    }
+  };
+
   return {
     addMoment,
     petMoments,
     getPetMomentsByUser,
     events,
     getAllEvents,
+    getMomentDetailsById,
+    petMoment,
+    isLoading,
   };
 };
 
