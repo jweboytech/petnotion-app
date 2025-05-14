@@ -7,5 +7,7 @@ interface PetMoment {
   pet_event_photos: {
     id: string;
     photo_url: string;
+    width: number;
+    height: number;
   }[];
 }

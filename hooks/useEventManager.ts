@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "@/utils";
 import { getUserData } from "@/utils/supabase";
 import React from "react";
+import { Image } from "react-native";
 
 export interface Moment {
   title: string;
@@ -29,16 +30,23 @@ const useEventManager = () => {
           .select()
           .single();
 
+        console.log(data, error);
+
         if (error) throw error;
 
         if (data != null) {
+          const { width, height } = await Image.getSize(payload.photo);
           const { error } = await supabase.from("pet_event_photos").insert([
             {
               event_id: data.id,
               photo_url: payload.photo,
               is_cover: true,
+              width,
+              height,
             },
           ]);
+
+          console.log(data, error);
           setIsLoading(false);
           if (error) throw error;
         } else {
@@ -46,6 +54,7 @@ const useEventManager = () => {
         }
       }
     } catch (error: any) {
+      console.log("err", error);
       setIsLoading(false);
       toast(error.message);
     }
@@ -64,7 +73,9 @@ const useEventManager = () => {
             created_at,
             pet_event_photos (
               id,
-              photo_url
+              photo_url,
+              width,
+              height
             )
           `
         )

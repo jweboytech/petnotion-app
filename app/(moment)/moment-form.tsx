@@ -27,10 +27,14 @@ const MomentFormScreen = () => {
   });
 
   const handleSubmit = (values: Moment) => {
-    addMoment(currPet.id, values).then(() => {
-      toast("Save Successful");
-      router.back();
-    });
+    try {
+      addMoment(currPet.id, values).then(() => {
+        toast("Save Successful");
+        router.back();
+      });
+    } catch (error) {
+      //
+    }
   };
 
   return (
