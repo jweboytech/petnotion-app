@@ -15,6 +15,10 @@ export function toast(text: string) {
   });
 }
 
-export function formatDate(value: string | number, format?: "LL, h:mm A") {
-  return dayjs(value).format("LL, h:mm A");
+export function formatDate(
+  value: string | number,
+  format?: "LL, h:mm A" | "MMMDD, h:mm"
+) {
+  const _format = format || "LL, h:mm A";
+  return dayjs(value).format(_format);
 }

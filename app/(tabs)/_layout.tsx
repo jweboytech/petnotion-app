@@ -57,21 +57,16 @@ export default function TabLayout() {
         }),
       }}
     >
+      <Tabs.Screen name="home/index" />
       <Tabs.Screen
-        name="home/index"
+        name="moment"
         options={{
-          tabBarStyle: { display: "none" },
-        }}
-      />
-      {/* <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Explore",
+          title: "Moment",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="paperplane.fill" color={color} />
           ),
         }}
-      /> */}
+      />
       <Tabs.Screen
         name="my"
         options={{
