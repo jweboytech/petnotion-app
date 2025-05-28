@@ -32,21 +32,16 @@ export default function RootLayout() {
     return null;
   }
 
-  // useEffect(() => {
-  //   const subscription = Linking.addEventListener("url", (event) => {
-  //     console.log("深度链接触发:", event.url);
-  //     WebBrowser.dismissBrowser(); // 双重保障
-  //   });
-
-  //   return () => subscription.remove();
-  // }, []);
-
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="(auth)/guide" options={{ headerShown: false }} />
+        <Stack.Screen name="(pet)/pet-form" />
+        <Stack.Screen name="(pet)/choose" />
+        <Stack.Screen name="(moment)/moment-form" />
+        <Stack.Screen name="(moment)/details" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

@@ -20,16 +20,6 @@ const Input = ({
   height,
   editable = true,
 }: InputProps) => {
-  // const [isFocus, setIsFocus] = React.useState(false);
-
-  // const handleFocus = () => {
-  //   setIsFocus(true);
-  // };
-
-  // const handleBlur = () => {
-  //   setIsFocus(false);
-  // };
-
   return (
     <Column gap={8}>
       <React.Fragment>{label && <Text>{label}</Text>}</React.Fragment>
@@ -37,8 +27,6 @@ const Input = ({
         onChangeText={onChange}
         placeholder={placeholder}
         value={value}
-        // onFocus={handleFocus}
-        // onBlur={handleBlur}
       />
     </Column>
   );

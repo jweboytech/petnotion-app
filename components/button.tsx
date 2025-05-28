@@ -10,7 +10,7 @@ interface ButtonProps extends PaperButtonProps {
   onPress?: VoidFunction;
   isDisabled?: boolean;
   className?: string;
-  href?: RelativePathString;
+  href?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({

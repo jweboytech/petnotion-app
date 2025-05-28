@@ -15,7 +15,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.petnotion.app"
+      "bundleIdentifier": "com.petnotion.app",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库以便您上传宠物照片。"
+      }
     },
     "android": {
       "package": "com.petnotion.app",
